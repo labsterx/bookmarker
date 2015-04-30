@@ -1,0 +1,207 @@
+<div class="container">
+
+	<h1 class="page-title text-center">Bookmarks</h1>
+
+	<!-- begin add new category form -->
+	<div class="add-category-form" ng-hide="loading">
+		<form ng-submit="addCategory()">
+			<input type="text" ng-model="newCategory.title" placeholder="Category Name" required></input>
+			<button type="submit" class="btn btn-sm">Add Category</button>
+		</form>
+	</div>
+	<!-- end add new category form -->
+
+	<!-- begin loading animation -->
+	<div class="loading-animation-big" ng-show="loading">
+		Loading...
+	</div>
+	<!-- end Loading animation -->
+
+
+	<div class="row" ng-hide="loading">
+
+		<!-- begin left column -->
+		<div class="col col-sm-6">
+
+				<div ng-repeat="category in categories" ng-show="$even" class="panel panel-default list-panel">
+					<div class="panel-heading">
+						<h4>{{category.title}} <i class="fa fa-cog pull-right" ng-click="showEditCategoryForm(category._id)"></i></h4>
+					</div>
+					<div class="panel-body">
+							<ul class="list-group">
+								<li ng-repeat="link in category.links" class="list-group-item link-list-item">
+									<a href="{{linkPrefix}}{{link.url}}" target="_blank">{{link.title}}</a> <i class="fa fa-pencil pull-right" ng-click="showEditLinkForm(link._id)"></i>
+								</li>
+							</ul>
+							<div class="category-actions">
+								<button class="btn btn-xs" ng-click="showAddLinkForm(category._id)"><i class="fa fa-plus"></i></button>
+							</div>
+					</div>
+				</div>
+
+			</div>
+			<!-- end left column -->
+
+			<!-- begin right column -->
+			<div class="col col-sm-6">
+
+					<div ng-repeat="category in categories" ng-show="$odd" class="panel panel-default list-panel">
+						<div class="panel-heading">
+							<h4>{{category.title}} <i class="fa fa-cog pull-right" ng-click="showEditCategoryForm(category._id)"></i></h4>
+						</div>
+						<div class="panel-body">
+							<ul class="list-group">
+								<li ng-repeat="link in category.links" class="list-group-item link-list-item">
+									<a href="{{linkPrefix}}{{link.url}}" target="_blank">{{link.title}}</a> <i class="fa fa-pencil pull-right" ng-click="showEditLinkForm(link._id)"></i>
+								</li>
+							</ul>
+							<div class="category-actions">
+								<button class="btn btn-xs" ng-click="showAddLinkForm(category._id)"><i class="fa fa-plus"></i></button>
+							</div>
+						</div>
+				 </div>
+
+			</div>
+			<!-- end right column -->
+
+	</div>
+
+</div>
+
+<!-- begin add new link modal -->
+<div id="add-new-link-form" class="my-modal" ng-show="showAddLinkModal">
+	<div class="modal-content">
+		<h4>Add New Link</h4>
+		<div class="modal-close" ng-click="hideAddLinkForm()">
+			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+		</div>
+		<div>
+			<form class="form-horizontal" ng-submit="addLink()">
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Category</label>
+					<div class="col-sm-10">
+						<select ng-hide="newLink.category" ng-model="newLink.category" ng-options="category._id as category.title for category in categories" required>
+							<option value="">-- choose category --</option>
+						</select>
+						<span ng-show="newLink.category">{{getCategoryTitleById(newLink.category)}}</span>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label">URL</label>
+					<div class="col-sm-10">
+						<input type="url" class="form-control" ng-model="newLink.url" placeholder="URL" required />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Title</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" ng-model="newLink.title" placeholder="Link Title" required />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-primary">Add Link</button>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</div>
+</div>
+<!-- end add new link modal -->
+
+
+<!-- begin edit link modal -->
+<div id="edit-link-form" class="my-modal" ng-show="showEditLinkModal">
+	<div class="modal-content">
+		<h4>Edit Link</h4>
+		<div class="modal-close" ng-click="hideEditLinkForm()">
+			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+		</div>
+		<!-- begin loading animation -->
+		<div class="loading-animation-medium" ng-hide="linkToEdit._id">
+			Loading...
+		</div>
+		<!-- end Loading animation -->
+		<div ng-show="linkToEdit._id">
+			<form class="form-horizontal" ng-submit="updateLink()">
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Category</label>
+					<div class="col-sm-10">
+						<select ng-model="linkToEdit.category" ng-options="category._id as category.title for category in categories" required>
+							<option value="">-- choose category --</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label">URL</label>
+					<div class="col-sm-10">
+						<input type="url" class="form-control" ng-model="linkToEdit.url" placeholder="URL" required />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Title</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" ng-model="linkToEdit.title" placeholder="Link Title" required />
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-6">
+						<button type="submit" class="btn btn-primary">Edit Link</button>
+					</div>
+					<div class="col-xs-6" style="text-align:right">
+						<button type="button" class="btn btn-danger" ng-really-message="Are you sure?" ng-really-click="deleteLink(linkToEdit._id)"><span class="glyphicon glyphicon-trash" style="color: #FFF" aria-hidden="true"></span></button>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</div>
+</div>
+<!-- end edit link modal -->
+
+
+<!-- begin edit category modal -->
+<div id="edit-category-form" class="my-modal" ng-show="showEditCategoryModal">
+	<div class="modal-content">
+		<h4>Edit Category</h4>
+		<div class="modal-close" ng-click="hideEditCategoryForm()">
+			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+		</div>
+		<!-- begin loading animation -->
+		<div class="loading-animation-small" ng-hide="categoryToEdit._id">
+			Loading...
+		</div>
+		<!-- end Loading animation -->
+		<div ng-show="categoryToEdit._id">
+			<form class="form-horizontal" ng-submit="updateCategory()">
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Title</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" ng-model="categoryToEdit.title" placeholder="Title" required />
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-xs-6">
+					<button type="submit" class="btn btn-primary">Edit Category</button>
+				</div>
+				<div class="col-xs-6" style="text-align:right">
+					<button type="button" class="btn btn-danger" ng-really-message="Are you sure?" ng-really-click="deleteCategory(categoryToEdit._id)"><span class="glyphicon glyphicon-trash" style="color: #FFF" aria-hidden="true"></span></button>
+				</div>
+			</div>
+
+			</form>
+		</div>
+	</div>
+</div>
+<!-- end edit category modal -->

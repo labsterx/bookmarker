@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>BookMarker/title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/angular-notify/dist/angular-notify.min.css">
+    <link href="/css/styles.css" rel="stylesheet">
+		<!--[if lt IE 9]>
+			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.19/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.19/angular-route.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.19/angular-resource.min.js"></script>
+    <script src="/bower_components/angular-notify/dist/angular-notify.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/bookmark/bookmark.js"></script>
+	</head>
+	<body ng-controller="AppCtrl" ng-cloak>
+  <nav class="navbar navbar-fixed-top navbar-inverse header">
+ 	<div class="col-md-12">
+        <div class="navbar-header">
+
+          <a href="/" class="navbar-brand"><img src="/images/logo_white.png" style="width: 215px; height: auto; margin-top: -11px"></a>
+<!--           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
+          <i class="fa fa-search"></i>
+          </button> -->
+
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-collapse1">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">Home</a></li>
+            <li><a href="#/bookmark" role="button" ng-show="profile.username">Member Area</a></li>
+            <li class="dropdown" ng-show="profile.username">
+              <a href="javascript:" class="dropdown-toggle" role="button" data-toggle="dropdown">
+                <i class="fa fa-user"></i> {{profile.username}} <span class="caret"></span></a>
+              <ul id="g-account-menu" class="dropdown-menu" role="menu">
+                <li><a href="javascript:" ng-click="logout()"><i class="fa fa-lock"></i> Logout</a></li>
+              </ul>
+            </li>
+            <li><a href="#/login" role="button" ng-hide="profile.username">Login</a></li>
+           </ul>
+
+<!--           <a href="#" style="margin-left:15px;" class="navbar-btn btn btn-default btn-plus dropdown-toggle" data-toggle="dropdown"><i class="fa fa-home" ></i> Home <small><i class="fa fa-chevron-down"></i></small></a>
+          <ul class="nav dropdown-menu">
+              <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+              <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+              <li><a href="#"><i class="fa fa-inbox"></i> Pages</a></li>
+              <li class="nav-divider"></li>
+              <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
+              <li><a href="#"><i class="fa fa-plus"></i> More..</a></li>
+          </ul> -->
+
+        </div>
+     </div>
+</nav>
+
+<!--main-->
+<div class="container" id="main">
+
+  <div ng-view></div>
+
+</div><!--/main-->
+
+<!-- footer -->
+<footer class="text-center" style="background: #444; color: #FFF; padding: 20px">
+  <div class="container">
+    <div>© Copyright</div>
+  </div>
+</footer>
+
+
+
+<!--login modal-->
+<div id="loginModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+  <div class="modal-content">
+      <form name="signin" action="/auth" method="post">
+      <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h2 class="text-center">Login</h2>
+      </div>
+      <div class="modal-body">
+          <form class="form col-md-12 center-block" name="login-form">
+            <div class="form-group">
+              <input name="username" id="login-username" type="text" class="form-control input-lg" placeholder="Username">
+            </div>
+            <div class="form-group">
+              <input name="password" id="login-password" type="password" class="form-control input-lg" placeholder="Password">
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary btn-lg btn-block">Sign In</button>
+              <!-- <span class="pull-right"><a href="#">Register</a></span><span><a href="#">Need help?</a></span> -->
+            </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+          <div class="col-md-12">
+          <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+		  </div>
+      </div>
+  </div>
+  </div>
+</div>
+
+
+
+	</body>
+</html>
