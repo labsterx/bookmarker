@@ -1,0 +1,1 @@
+Bookmaker is a web app to manage bookmarks. It's built with the MEAN stack: AngularJS on the front-end, Node.js, Expree and MongoDB on the backend.
