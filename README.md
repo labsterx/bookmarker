@@ -1,7 +1,9 @@
 Bookmarker
 =========
 
-Bookmarker is a web app to manage bookmarks. It's built with the MEAN stack: AngularJS on the front-end, Node.js, Expree and MongoDB on the backend.
+Bookmarker is a web app to manage bookmarks. It allows users to create, add and manage bookmarks online.
+
+This web app is built with the MEAN stack with AngularJS on the front-end and Node.js, Expree and MongoDB on the backend.
 
 Author
 ------
