@@ -2,6 +2,12 @@
 
 angular.module('myApp')
 
+.factory('Page', function($resource) {
+		return $resource('/api/pages/:id', { id: '@_id' }, {
+			update: { method: 'PUT' }
+		});
+})
+
 .factory('Category', function($resource) {
 		return $resource('/api/categories/:id', { id: '@_id' }, {
 			update: { method: 'PUT' }
@@ -14,12 +20,38 @@ angular.module('myApp')
 		});
 })
 
-.controller('BookmarkCtrl', function ($scope, Category, Link, notify) {
+.controller('BookmarkCtrl', function ($scope, Page, Category, Link, notify, $routeParams, $q, $location) {
 
 	// $scope.linkPrefix = 'https://href.li/?';
 	$scope.linkPrefix = '';
+	var idToPageMap = {};
 	var idToCategoryMap = {};
 	$scope.loading = false;
+
+	var pageId = $routeParams.pageId;
+
+	var savedPageId = localStorage.getItem('PAGE_ID');
+
+	if (pageId) {
+		localStorage.setItem('PAGE_ID', pageId);
+	}
+	else {
+		if (localStorage.getItem('PAGE_ID')) {
+			pageId = localStorage.getItem('PAGE_ID');
+			$location.path('bookmark/' + pageId);
+		}
+		else {
+			Page.query().$promise.then(function(pages) {
+				if(pages.length > 0) {
+					pageId = pages[0]._id;
+					localStorage.setItem('PAGE_ID', pageId);
+					$location.path('bookmark/' + pageId);
+				}
+			});
+		}
+	}
+
+	console.log('PageId: ', pageId);
 
 	$scope.init = function() {
 		$scope.loading = true;
@@ -29,43 +61,125 @@ angular.module('myApp')
 			title: null,
 			category: null
 		}
+		$scope.pages = [];
 		$scope.categories = [];
+		$scope.filteredCategories = [];
 		$scope.links = [];
+		$scope.currentPage = null;
 
 		$scope.showAddLinkModal = false;
 		$scope.showEditLinkModal = false;
 		$scope.showEditCategoryModal = false;
+		$scope.showEditPageModal = false;
 		$scope.linkToEdit = null;
 		$scope.categoryToEdit = null;
+		$scope.pageToEdit = null;
 
-		Category.query().$promise.then(function(categories) {
+		var pagePromise = Page.query().$promise;
+		var categoryPromise = Category.query().$promise;
+		var linkPromise = Link.query().$promise;
 
+		$q.all([pagePromise, categoryPromise, linkPromise]).then(function(data){
+
+			var pages = data[0];
+			var categories = data[1];
+			var links = data[2];
+
+			idToPageMap = {};
 			idToCategoryMap = {};
+
+			$scope.pages = pages;
+
+			angular.forEach($scope.pages, function(page) {
+				idToPageMap[page._id] = page;
+				page.categories = [];
+			});
+
+
 			$scope.categories = categories;
+
 			angular.forEach($scope.categories, function(category) {
 				idToCategoryMap[category._id] = category;
 				category.links = [];
 			});
 
-			Link.query().$promise.then(function(links) {
-				$scope.links = links;
-				angular.forEach(links, function(link) {
-					var matchedCategory = idToCategoryMap[link.category];
-					if (matchedCategory) {
-						matchedCategory.links.push(link);
+			if (pageId) {
+				$scope.currentPage = idToPageMap[pageId];
+				angular.forEach($scope.categories, function(category) {
+					if (category.page == pageId) {
+						// console.log('matched: ', pageId);
+						$scope.filteredCategories.push(category);
 					}
 				});
-				$scope.loading = false;
-			}, function(errResp) {
-				$scope.loading = false;
-				notify('Error loading links: ' + errResp.data.msg);
+			}
+			else {
+				$scope.currentPage = {
+					title: 'All Pages'
+				};
+				$scope.filteredCategories = $scope.categories;
+			}
+
+			$scope.links = links;
+
+			angular.forEach(links, function(link) {
+				var matchedCategory = idToCategoryMap[link.category];
+				if (matchedCategory) {
+					matchedCategory.links.push(link);
+				}
 			});
+
+			$scope.loading = false;
 
 		}, function(errResp) {
 			$scope.loading = false;
-			notify('Error loading categories: ' + errResp.data.msg);
+			notify('Error loading data ');
 		});
 
+	};
+
+	$scope.addPage = function() {
+		var page = new Page($scope.newPage);
+		page.$save(function(){
+			$scope.init();
+		});
+	}
+
+	$scope.showEditPageForm = function(pageId) {
+		$scope.pageToEdit = null;
+		Page.get( { id: pageId }, function(page) {
+			$scope.pageToEdit = page;
+		});
+		$scope.showEditPageModal = true;
+	}
+
+	$scope.hideEditPageForm = function(pageId) {
+		$scope.showEditPageModal = false;
+	}
+
+	$scope.getPageTitleById = function(pageId) {
+		if (idToPageMap[pageId]) {
+			return idToPageMap[pageId].title;
+		}
+		else {
+			return '';
+		}
+	}
+
+	$scope.updatePage = function() {
+		$scope.pageToEdit.$update(function(){
+			$scope.init();
+		});
+	}
+
+	$scope.deletePage = function(pageId) {
+		Page.delete( { id: pageId }, function() {
+			if (localStorage.getItem('PAGE_ID') && localStorage.getItem('PAGE_ID') == pageId) {
+				pageId = localStorage.removeItem('PAGE_ID');
+			}
+			$scope.init();
+		}, function(errResp) {
+			notify('Error: ' + errResp.data.msg);
+		});
 	}
 
 	$scope.getCategoryTitleById = function(categoryId) {
@@ -78,6 +192,9 @@ angular.module('myApp')
 	}
 
 	$scope.addCategory = function() {
+		if (pageId && idToPageMap[pageId]) {
+			$scope.newCategory.page = pageId;
+		}
 		var category = new Category($scope.newCategory);
 		category.$save(function(){
 			$scope.init();

@@ -1,15 +1,44 @@
+<div style="margin-bottom: 20px">
+	<div class="btn-group" role="group" aria-label="...">
+	  <a ng-repeat="page in pages" type="button" class="btn btn-default" ng-class="{'btn-primary': currentPage && currentPage._id == page._id}"  href="#/bookmark/{{ page._id}}">{{ page.title }}</a>
+	</div>
+
+
+	<div class="pull-right">
+		<!-- begin add new page form -->
+		<div class="add-page-form" style="text-align:right">
+			<form ng-submit="addPage()">
+				<input type="text" ng-model="newPage.title" placeholder="Page Title" required></input>
+				<button type="submit" class="btn btn-sm">Add Page</button>
+			</form>
+		</div>
+		<!-- end add new category form -->
+	</div>
+</div>
+
 <div class="container">
 
-	<h1 class="page-title text-center">Bookmarks</h1>
+
+			<div class="page-title text-center">
+				{{ currentPage.title }}
+				<i ng-show="currentPage._id" class="fa fa-cog" style="font-size: 0.7em; color: #ADADAD" ng-click="showEditPageForm(currentPage._id)"></i>
+			</div>
+
 
 	<!-- begin add new category form -->
-	<div class="add-category-form" ng-hide="loading">
+	<div class="add-category-form" ng-hide="loading" style="margin-bottom: 20px">
 		<form ng-submit="addCategory()">
 			<input type="text" ng-model="newCategory.title" placeholder="Category Name" required></input>
 			<button type="submit" class="btn btn-sm">Add Category</button>
 		</form>
 	</div>
 	<!-- end add new category form -->
+
+	<!-- begin no category -->
+	<div class="alert alert-info" role="alert" ng-show="!loading && filteredCategories.length == 0">
+		Please Add Category to this Page and then Add Links
+	</div>
+	<!-- end no category -->
 
 	<!-- begin loading animation -->
 	<div class="loading-animation-big" ng-show="loading">
@@ -23,7 +52,7 @@
 		<!-- begin left column -->
 		<div class="col col-sm-6">
 
-				<div ng-repeat="category in categories" ng-show="$even" class="panel panel-default list-panel">
+				<div ng-repeat="category in filteredCategories" ng-show="$even" class="panel panel-default list-panel">
 					<div class="panel-heading">
 						<h4>{{category.title}} <i class="fa fa-cog pull-right" ng-click="showEditCategoryForm(category._id)"></i></h4>
 					</div>
@@ -45,7 +74,7 @@
 			<!-- begin right column -->
 			<div class="col col-sm-6">
 
-					<div ng-repeat="category in categories" ng-show="$odd" class="panel panel-default list-panel">
+					<div ng-repeat="category in filteredCategories" ng-show="$odd" class="panel panel-default list-panel">
 						<div class="panel-heading">
 							<h4>{{category.title}} <i class="fa fa-cog pull-right" ng-click="showEditCategoryForm(category._id)"></i></h4>
 						</div>
@@ -191,12 +220,59 @@
 				</div>
 			</div>
 
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Page</label>
+				<div class="col-sm-10">
+					<select ng-model="categoryToEdit.page" ng-options="page._id as page.title for page in pages" required>
+						<option value="">-- choose page --</option>
+					</select>
+				</div>
+			</div>
+
 			<div class="row">
 				<div class="col-xs-6">
 					<button type="submit" class="btn btn-primary">Edit Category</button>
 				</div>
 				<div class="col-xs-6" style="text-align:right">
 					<button type="button" class="btn btn-danger" ng-really-message="Are you sure?" ng-really-click="deleteCategory(categoryToEdit._id)"><span class="glyphicon glyphicon-trash" style="color: #FFF" aria-hidden="true"></span></button>
+				</div>
+			</div>
+
+			</form>
+		</div>
+	</div>
+</div>
+<!-- end edit category modal -->
+
+
+<!-- begin edit Page modal -->
+<div id="edit-category-form" class="my-modal" ng-show="showEditPageModal">
+	<div class="modal-content">
+		<h4>Edit Page</h4>
+		<div class="modal-close" ng-click="hideEditPageForm()">
+			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+		</div>
+		<!-- begin loading animation -->
+		<div class="loading-animation-small" ng-hide="pageToEdit._id">
+			Loading...
+		</div>
+		<!-- end Loading animation -->
+		<div ng-show="pageToEdit._id">
+			<form class="form-horizontal" ng-submit="updatePage()">
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Title</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" ng-model="pageToEdit.title" placeholder="Title" required />
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-xs-6">
+					<button type="submit" class="btn btn-primary">Edit Page</button>
+				</div>
+				<div class="col-xs-6" style="text-align:right">
+					<button type="button" class="btn btn-danger" ng-really-message="Are you sure?" ng-really-click="deletePage(pageToEdit._id)"><span class="glyphicon glyphicon-trash" style="color: #FFF" aria-hidden="true"></span></button>
 				</div>
 			</div>
 
