@@ -14,7 +14,8 @@ var app        = express();
 
 var db = mongoose.connect(config.mongo.uri);
 
-var port = process.env.PORT || config.port; // set our port
+var port = process.env.OPENSHIFT_NODEJS_PORT || process.env.OPENSHIFT_INTERNAL_PORT || config.port; // set our port
+var ipaddr = process.env.OPENSHIFT_NODEJS_IP || process.env.OPENSHIFT_INTERNAL_IP || 'localhost';
 
 var USERS = config.usrs;
 
@@ -22,6 +23,6 @@ require('./routes')(app);
 
 // START THE SERVER
 // =============================================================================
-app.listen(port);
+app.listen(port, ipaddr);
 console.log('Magic happens on port ' + port);
 

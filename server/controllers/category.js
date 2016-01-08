@@ -38,7 +38,12 @@ exports.update = function(req, res) {
 			res.json(500, {msg: 'Error getting category.', err: err});
 		}
 		else {
-			data.title = req.body.title;
+			if (req.body.hasOwnProperty('title')) {
+				data.title = req.body.title;
+			}
+			if (req.body.hasOwnProperty('page')) {
+				data.page = req.body.page;
+			}
 			data.save(function(err) {
 				if (err) {
 					res.json(500, {msg: 'Error updating category.', err: err});
@@ -81,6 +86,9 @@ exports.create = function(req, res) {
 	var newCategory = new CategoryModel({
 		title: req.body.title
 	})
+	if (req.body.hasOwnProperty('page')) {
+		newCategory.page = req.body.page;
+	}
 	newCategory.save(function(err) {
 		if (err){
 			res.json(500, {msg: 'Error createing new category.', err: err});
