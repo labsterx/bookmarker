@@ -1,9 +1,8 @@
 'use strict';
 
-var mongo_uri = 'mongodb://[SECRET]';
-if (process.env.NEOTEC_CODE_LEVEL && process.env.NEOTEC_CODE_LEVEL == 'dev') {
-	mongo_uri = 'mongodb://[SECRET]';
-	console.log('Will use dev database.');
+var mongo_uri = 'mongodb://[SECRET_URI]';
+if (process.env.BOOKMARKER_MONGO_URI) {
+	mongo_uri = process.env.BOOKMARKER_MONGO_URI;
 }
 
 module.exports = {
