@@ -25,6 +25,8 @@ $ npm start
 
 ```
 
+For logging in, use the username "test" and password "bookmarker".
+
 Author
 ------
 

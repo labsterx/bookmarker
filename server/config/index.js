@@ -17,7 +17,7 @@ module.exports = {
 		{
 			id: 1,
 			username: 'test',
-			password: '[encrypted passwd]',
+			password: '$2a$10$VzhVMMbW/gms4HVde90tnu3VouZ0o0jp6Bi4jzbG5UQpk7ZJ5TFRC',
 			role: 'superadmin'
 		},
 	]

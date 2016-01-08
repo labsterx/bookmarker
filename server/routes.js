@@ -15,6 +15,7 @@ var config     = require('./config');
 module.exports = function(app) {
 
 	var auth = require('./controllers/auth');
+	var pages = require('./controllers/page');
 	var categories = require('./controllers/category');
 	var links = require('./controllers/link');
 
@@ -36,6 +37,13 @@ module.exports = function(app) {
 	// app.post('/auth/check', auth.check);
 	// app.get('/auth/test', auth.test);
 	app.post('/api/refreshtoken', auth.refreshToken);
+
+	// Pages
+	app.get('/api/pages', pages.index);
+	app.post('/api/pages', pages.create);
+	app.get('/api/pages/:id', pages.findById);
+	app.put('/api/pages/:id', pages.update);
+	app.delete('/api/pages/:id', pages.delete);
 
 	// Categories
 	app.get('/api/categories', categories.index);
