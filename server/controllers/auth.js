@@ -7,8 +7,8 @@ var bcrypt     = require('bcryptjs');
 var USERS      = config.users;
 var secret     = config.jwt.secret;
 
-var tokenEexpiresInMinutes = 60*24*7;
-// var tokenEexpiresInMinutes = 31;
+var tokenEexpiresInSeconds = 60*60*24*7;
+// var tokenEexpiresInSeconds = 31;
 
 var findUserByUsernamePasswd = function (username, passwd) {
 
@@ -60,7 +60,7 @@ exports.auth = function (req, res) {
 		role: matchedUser.role
 	};
 
-	var token = jwt.sign(profile, secret, { expiresInMinutes: tokenEexpiresInMinutes });
+	var token = jwt.sign(profile, secret, { expiresIn: tokenEexpiresInSeconds });
 
 	res.json({ token: token });
 
@@ -84,7 +84,7 @@ exports.refreshToken = function (req, res) {
 						username: matchedUser.username,
 						role: matchedUser.role
 					};
-					var newToken = jwt.sign(profile, secret, { expiresInMinutes: tokenEexpiresInMinutes });
+					var newToken = jwt.sign(profile, secret, { expiresIn: tokenEexpiresInSeconds });
 					res.json({ token: newToken });
 				}
 				else {
