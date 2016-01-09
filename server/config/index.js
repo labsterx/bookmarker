@@ -6,7 +6,7 @@ if (process.env.BOOKMARKER_MONGO_URI) {
 }
 
 module.exports = {
-	port: 5000,
+	port: 3000,
 	mongo: {
 		uri: mongo_uri
 	},

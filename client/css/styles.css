@@ -1,13 +1,3 @@
-/*
-A custom Bootstrap 3.1 'Google Plus style' theme
-from http://bootply.com
-
-This CSS code should follow the 'bootstrap.css'
-in your HTML file.
-
-license: MIT
-author: bootply.com
-*/
 
 @import url(http://fonts.googleapis.com/css?family=Roboto:400);
 body {
@@ -41,6 +31,14 @@ body {
 .btn-info,.label-info,.progress-bar-info{background-color:#a0c3ff;border-color:#a0c3ff;}
 .btn-danger,.label-danger,.progress-bar-danger{background-color:#dd4b39;}
 .btn-warning,.label-warning,.progress-bar-warning{background-color:#f4b400;color:#444444;}
+
+footer a {
+	color: #B2D3CE;
+}
+
+footer a:hover {
+	color: #EDEDED;
+}
 
 hr {border-color:#ececec;}
 button {
@@ -228,16 +226,18 @@ h3,h4,h5 {
 	color: #FFF;
 }
 
-.add-category-form {
+.add-category-form, .add-page-form {
 	margin: 10px auto;
 	text-align: center;
 }
 
-.add-category-form input {
+.add-category-form input,
+.add-page-form input {
 	padding-left: 8px;
 	margin-right: 5px;
 }
-.add-category-form .btn {
+.add-category-form .btn,
+.add-page-form .btn {
 	padding: 1px 8px;
 }
 .loading-animation-big {

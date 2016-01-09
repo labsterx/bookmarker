@@ -209,6 +209,10 @@ angular.module('myApp', ['ngRoute', 'ngResource', 'cgNotify'])
 			controller  : 'BookmarkCtrl'
 		})
 
+		.when('/bookmark/:pageId', {
+			templateUrl : '/js/bookmark/index.html',
+			controller  : 'BookmarkCtrl'
+		})
 
 })
 
